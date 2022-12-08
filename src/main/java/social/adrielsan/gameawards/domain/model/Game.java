@@ -2,7 +2,7 @@ package social.adrielsan.gameawards.domain.model;
 
 import jakarta.persistence.*;
 
-@Entity(name = "GAMES")
+@Entity(name = "games")
 
 public class Game {
     @Id

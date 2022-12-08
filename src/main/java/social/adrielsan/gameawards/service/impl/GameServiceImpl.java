@@ -1,6 +1,7 @@
 package social.adrielsan.gameawards.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import social.adrielsan.gameawards.domain.model.Game;
 import social.adrielsan.gameawards.domain.model.GameRepository;
@@ -20,7 +21,7 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public List<Game> findAll() {
-        List<Game> games = repository.findAll();
+        List<Game> games = repository.findAll(Sort.by(Sort.Direction.DESC, "votes"));
         return games;
     }
 
@@ -35,6 +36,7 @@ public class GameServiceImpl implements GameService {
         if (Objects.nonNull(game.getId())) {
             throw new BusinessException("ID different of NULL inserting");
         } else {
+
             repository.save(game);
         }
     }
@@ -53,5 +55,12 @@ public class GameServiceImpl implements GameService {
     public void delete(Long id) {
         Game gameDb = findById(id);
         repository.delete(gameDb);
+    }
+
+    @Override
+    public void vote(Long id) {
+        Game gameDb = findById(id);
+        gameDb.setVotes(gameDb.getVotes() + 1);
+        update(id, gameDb);
     }
 }

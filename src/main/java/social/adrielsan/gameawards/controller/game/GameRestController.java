@@ -1,15 +1,17 @@
-package social.adrielsan.gameawards.controller;
+package social.adrielsan.gameawards.controller.game;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import social.adrielsan.gameawards.controller.BaseRestController;
 import social.adrielsan.gameawards.domain.model.Game;
 import social.adrielsan.gameawards.service.GameService;
 
 import java.util.List;
 
+@CrossOrigin
 @RestController
-public class GameRestController {
+public class GameRestController extends BaseRestController {
 
     @Autowired
     private GameService businessLayer;
@@ -33,9 +35,15 @@ public class GameRestController {
     }
 
     @PutMapping ("games/{id}")
-    public ResponseEntity<Game> insert(@PathVariable Long id, @RequestBody Game game) {
+    public ResponseEntity<Game> update(@PathVariable Long id, @RequestBody Game game) {
         businessLayer.update(id, game);
         return ResponseEntity.ok(game);
+    }
+
+    @PatchMapping ("games/{id}/vote")
+    public ResponseEntity<Game> vote(@PathVariable Long id) {
+        businessLayer.vote(id);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping ("games/{id}")
