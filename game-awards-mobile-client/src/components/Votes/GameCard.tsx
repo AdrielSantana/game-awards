@@ -67,6 +67,7 @@ const styles = StyleSheet.create({
     height: 250,
   },
   label: {
+    paddingBottom: 16,
     fontSize: 18,
     color: "white",
     fontFamily: "Draper",

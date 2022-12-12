@@ -1,18 +1,19 @@
 import React from "react";
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
+import { FontAwesome5 } from "@expo/vector-icons";
 
 import tga from "../../assets/images/tga.png";
 
-const Header = (props: { title: string }) => {
+const Header = () => {
   return (
     <View style={styles.header}>
       <View>
         <Image resizeMode="contain" source={tga} style={styles.logo} />
       </View>
 
-      <View>
-        <Text style={styles.label}>{props.title}</Text>
-      </View>
+      <TouchableOpacity onPress={() => {}}>
+        <FontAwesome5 name="bars" size={40} color="white" />
+      </TouchableOpacity>
     </View>
   );
 };
@@ -37,12 +38,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.6,
     shadowRadius: 4.65,
     elevation: 8,
-  },
-  label: {
-    fontFamily: "Draper",
-    color: "#FFF",
-    fontSize: 16,
-    textAlign: "center",
   },
   logo: { width: 260 },
 });

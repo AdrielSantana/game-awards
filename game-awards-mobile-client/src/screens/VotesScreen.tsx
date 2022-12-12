@@ -5,6 +5,7 @@ import {
   StyleSheet,
   ScrollView,
   ImageBackground,
+  Image,
 } from "react-native";
 
 import Header from "../components/Header";
@@ -31,8 +32,7 @@ const VotesScreen = () => {
       source={background}
       resizeMode="cover"
       style={styles.background}
-    >
-      <Header title="votes" />
+    >      
       <ScrollView style={styles.gamesContainer}>
         {gameList.length > 0 ? (
           gameList.map((game, i) => {
@@ -59,6 +59,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     flex: 1,
   },
+  
 });
 
 export default VotesScreen;

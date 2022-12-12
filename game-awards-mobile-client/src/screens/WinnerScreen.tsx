@@ -5,6 +5,7 @@ import {
   StyleSheet,
   ImageBackground,
   ScrollView,
+  Image,
 } from "react-native";
 
 import Header from "../components/Header";
@@ -13,6 +14,8 @@ import Winner from "../components/Winner/Winner";
 import { clientGetWinner } from "../api/api";
 
 import background from "../../assets/images/bg.png";
+import tgaTrophy from "../../assets/images/tgaTrophy.png";
+
 import { Game } from "../interfaces/GameInterface";
 
 const WinnerScreen = () => {
@@ -31,7 +34,7 @@ const WinnerScreen = () => {
       resizeMode="cover"
       style={styles.background}
     >
-      <Header title="winner" />
+      <Image source={tgaTrophy} style={styles.tgaTrophy} resizeMode="contain" />
       <ScrollView style={styles.winnerContainer}>
         <Text style={styles.goty}>game of the year</Text>
         {winner != undefined ? <Winner game={winner} /> : <></>}
@@ -55,6 +58,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   goty: {
+    paddingBottom: 32,
     fontFamily: "Draper",
     color: "white",
     fontSize: 32,
@@ -65,6 +69,7 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 0, height: 5 },
     textShadowRadius: 13,
   },
+  tgaTrophy: { position: "absolute", top: "75%" },
 });
 
 export default WinnerScreen;

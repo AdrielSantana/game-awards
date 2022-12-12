@@ -18,7 +18,6 @@ const styles = StyleSheet.create({
   winnerCard: {
     display: "flex",
     alignItems: "center",
-    paddingTop: 32
   },
   cardBox: {
     shadowColor: "#000",
