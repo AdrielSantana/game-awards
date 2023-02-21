@@ -1,12 +1,15 @@
 import { Request, Response } from "express";
 import { Category, Game } from "../models";
-import { CategoryGames } from "../models/categoryGames";
+import { CategoryGames, CategoryGamesInstance } from "../models/categoryGames";
+import { GameInstance } from "../models/game";
 
 export const categoryController = {
   //GET /categories
   index: async (req: Request, res: Response) => {
     try {
-      const categories = await Category.findAll();
+      const categories = await Category.findAll({
+        attributes: { exclude: ["createdAt", "updatedAt"] },
+      });
 
       return res.status(200).json(categories);
     } catch (error) {
@@ -20,7 +23,19 @@ export const categoryController = {
   show: async (req: Request, res: Response) => {
     const { id } = req.params;
     try {
-      const category = await Category.findByPk(id, { include: "games" });
+      const category = await Category.findByPk(id, {
+        include: [
+          {
+            model: Game,
+            attributes: { exclude: ["createdAt", "updatedAt"] },
+            through: {
+              as: "categoryGames",
+              attributes: ["votes"],
+            },
+          },
+        ],
+        attributes: { exclude: ["createdAt", "updatedAt"] },
+      });
 
       if (!category) {
         return res
@@ -268,6 +283,37 @@ export const categoryController = {
         votes: association.votes,
         found: true,
       });
+    } catch (error) {
+      if (error instanceof Error) {
+        return res.status(400).json(error.message);
+      }
+    }
+  },
+
+  //GET /categories/:id/winner
+  getWinner: async (req: Request, res: Response) => {
+    const id = req.params.id;
+
+    try {
+      const associations = await CategoryGames.findAll({ where: { id } });
+
+      if (!associations) {
+        return res
+          .status(404)
+          .json({ message: "category not found", found: false });
+      }
+
+      let winnerAssociation: CategoryGamesInstance = associations[0];
+
+      associations.forEach((association) => {
+        if (association.votes > winnerAssociation.votes) {
+          winnerAssociation = association;
+        }
+      });
+
+      const game = await Game.findByPk(winnerAssociation.gameId);
+
+      return res.status(200).json(game);
     } catch (error) {
       if (error instanceof Error) {
         return res.status(400).json(error.message);

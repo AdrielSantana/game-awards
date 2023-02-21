@@ -15,6 +15,9 @@ router.delete("/categories/:categoryId/:gameId", categoryController.removeGame);
 router.post("/categories/:categoryId/:gameId/vote", categoryController.addVote);
 router.get("/categories/:categoryId/:gameId", categoryController.getGame);
 
+router.get("/categories/:id/winner", categoryController.getWinner);
+
+
 router.get("/games", gameController.index);
 router.get("/games/:id", gameController.show);
 router.post("/games", gameController.save);

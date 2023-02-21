@@ -1,11 +1,13 @@
 import { Request, Response } from "express";
-import { Game } from "../models";
+import { Category, Game } from "../models";
 
 export const gameController = {
   //GET /games
   index: async (req: Request, res: Response) => {
     try {
-      const games = await Game.findAll();
+      const games = await Game.findAll({
+        attributes: { exclude: ["createdAt", "updatedAt"] },
+      });
 
       return res.status(200).json(games);
     } catch (error) {
@@ -19,7 +21,19 @@ export const gameController = {
   show: async (req: Request, res: Response) => {
     const { id } = req.params;
     try {
-      const game = await Game.findByPk(id, { include: "categories" });
+      const game = await Game.findByPk(id, {
+        include: [
+          {
+            model: Category,
+            attributes: { exclude: ["createdAt", "updatedAt"] },
+            through: {
+              as: "categoryGames",
+              attributes: ["votes"],
+            },
+          },
+        ],
+        attributes: { exclude: ["createdAt", "updatedAt"] },
+      });
 
       if (!game) {
         return res
