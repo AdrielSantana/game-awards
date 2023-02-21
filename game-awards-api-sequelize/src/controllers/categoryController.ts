@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { Category, Game } from "../models";
 import { CategoryGames, CategoryGamesInstance } from "../models/categoryGames";
-import { GameInstance } from "../models/game";
 
 export const categoryController = {
   //GET /categories
@@ -290,17 +289,28 @@ export const categoryController = {
     }
   },
 
-  //GET /categories/:id/winner
+  //GET /categories/:categoryId/winner
   getWinner: async (req: Request, res: Response) => {
-    const id = req.params.id;
+    const { categoryId } = req.params;
 
     try {
-      const associations = await CategoryGames.findAll({ where: { id } });
+      const category = await Category.findByPk(categoryId);
 
-      if (!associations) {
+      if (!category) {
         return res
           .status(404)
           .json({ message: "category not found", found: false });
+      }
+
+      const associations = await CategoryGames.findAll({
+        where: { categoryId },
+      });
+
+      if (associations.length < 1) {
+        return res.status(404).json({
+          message: "category do not have games associated",
+          found: false,
+        });
       }
 
       let winnerAssociation: CategoryGamesInstance = associations[0];
@@ -313,7 +323,12 @@ export const categoryController = {
 
       const game = await Game.findByPk(winnerAssociation.gameId);
 
-      return res.status(200).json(game);
+      return res.status(200).json({
+        ...game?.get(),
+        category: category.name,
+        votes: winnerAssociation.votes,
+        found: true,
+      });
     } catch (error) {
       if (error instanceof Error) {
         return res.status(400).json(error.message);
