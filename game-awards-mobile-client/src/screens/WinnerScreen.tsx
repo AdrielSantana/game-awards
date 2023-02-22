@@ -8,7 +8,6 @@ import {
   Image,
 } from "react-native";
 
-import Header from "../components/Header";
 import Winner from "../components/Winner/Winner";
 
 import { clientGetWinner } from "../api/api";
@@ -26,7 +25,7 @@ const WinnerScreen = () => {
       const response = await clientGetWinner();
       setWinner(response);
     })();
-  }, [winner]);
+  }, []);
 
   return (
     <ImageBackground

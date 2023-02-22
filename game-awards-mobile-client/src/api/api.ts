@@ -1,31 +1,55 @@
-import { Game } from "../interfaces/GameInterface";
+import { CategoryGame, ShowCategoryGame } from "../interfaces/GameInterface";
+import {
+  GetCategoryGamesResponse,
+  WinnerResponse,
+} from "../interfaces/Response";
+import Constants from "expo-constants";
 
-const baseApiURL = "http://192.168.0.112:8080/api/";
+const baseApiURL: string = `${Constants.expoConfig?.extra?.apiUrl}`;
 
-const clientGetGames = async (): Promise<[Game] | []> => {
+const clientGetGames = async (): Promise<[CategoryGame] | []> => {
   const requestOption = {
     method: "GET",
   };
-  const response = await fetch(`${baseApiURL}games`, requestOption);
-  const json: [Game] = await response.json();
-  return json;
+  try {
+    const response = await fetch(`${baseApiURL}/categories/8`, requestOption);
+
+    const json: GetCategoryGamesResponse = await response.json();
+    const games: [CategoryGame] = json.games;
+    return games;
+  } catch (error) {
+    console.log(error);
+  }
+  return [];
 };
 
 const clientSendingVotes = async (id: number): Promise<void> => {
   const requestOption = {
-    method: "PATCH",
+    method: "POST",
   };
-  fetch(`${baseApiURL}games/${id}/vote`, requestOption);
+  try {
+    await fetch(`${baseApiURL}/categories/8/${id}/vote`, requestOption);
+  } catch (error) {
+    console.log(error);
+  }
 };
 
-const clientGetWinner = async (): Promise<Game | undefined> => {
+const clientGetWinner = async (): Promise<ShowCategoryGame | undefined> => {
   const requestOption = {
     method: "GET",
   };
-  const response = await fetch(`${baseApiURL}games`, requestOption);
-  const json: [Game] = await response.json();
-  const GOTY = json[0];
-  return GOTY;
+
+  try {
+    const response = await fetch(
+      `${baseApiURL}/categories/8/winner`,
+      requestOption
+    );
+    const json: WinnerResponse = await response.json();
+    const GOTY = json.winner;
+    return GOTY;
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export { clientGetGames, clientGetWinner, clientSendingVotes };

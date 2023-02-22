@@ -11,7 +11,7 @@ import {
 
 import { clientSendingVotes } from "../../api/api";
 
-import { Game } from "../../interfaces/GameInterface";
+import { CategoryGame } from "../../interfaces/GameInterface";
 
 const sendingVote = (id: number): void => {
   Alert.alert("Vote send", "Thanks for helping decide the Game Of The Year", [
@@ -19,7 +19,7 @@ const sendingVote = (id: number): void => {
   ]);
 };
 
-const GameCard = (props: { game: Game | any }) => {
+const GameCard = (props: { game: CategoryGame | any }) => {
   return (
     <View style={styles.cardContainer}>
       <View style={styles.cardBox}>

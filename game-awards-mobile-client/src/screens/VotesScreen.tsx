@@ -8,31 +8,29 @@ import {
   Image,
 } from "react-native";
 
-import Header from "../components/Header";
-
 import { clientGetGames } from "../api/api";
 
 import background from "../../assets/images/bg.png";
 
-import { Game } from "../interfaces/GameInterface";
+import { CategoryGame } from "../interfaces/GameInterface";
 import GameCard from "../components/Votes/GameCard";
 
 const VotesScreen = () => {
-  const [gameList, setGameList] = useState<[Game] | []>([]);
+  const [gameList, setGameList] = useState<[CategoryGame] | []>([]);
 
   useEffect(() => {
     (async () => {
       const response = await clientGetGames();
       setGameList(response);
     })();
-  }, [gameList]);
+  }, []);
 
   return (
     <ImageBackground
       source={background}
       resizeMode="cover"
       style={styles.background}
-    >      
+    >
       <ScrollView style={styles.gamesContainer}>
         {gameList.length > 0 ? (
           gameList.map((game, i) => {
@@ -59,7 +57,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     flex: 1,
   },
-  
 });
 
 export default VotesScreen;
