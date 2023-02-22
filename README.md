@@ -1,24 +1,31 @@
 
 # **Game Awards**
 
-## Projeto mobile da semana DIO Fullstack Labs
+## Exibição do vencedor do Game Awards
 
-O projeto foi de 6 horas de duração ensinando um projeto completo mostrando as principais funcionalidades do React Navite como client e Spring Boot como API
 
+<div align=center> 
 <img src="./votes_screenshot.png" width="150" height="300" />
-
 <img src="./winner_screenshot.png" width="150" height="300" />
+</div>
 
 Lista de tecnologias utilizadas:
 
 * TypeScript
+* Express
+* Sequelize
+* Postgres
 * React Native ( Expo )
-* Java (SpringBoot)
-* H2 (Banco de dados)
 * +Tecnologias adjascentes
 
-> O aplicativo contabiliza os votos para cada jogo e fornece o vencedor entre eles. Para isso foi necessário criar uma API para fornecer o CRUD dos dados a serem manipulados pelo Client.
+> O aplicativo contabiliza os votos para cada jogo em cada categoria e fornece o vencedor entre eles. Para isso foi necessário criar uma API para fornecer o CRUD dos dados a serem manipulados pelo Client.
+> 
+> Rotas feitas com Express. Sequelize e Postgres para manipulação do banco de dados.
 >
+> Front-End Mobile Utilizando React Native e Expo
+>
+> Front-End Web em desenvolvimento...
+> 
 > *Design do front-end desenvolvido por mim*
 >
 
