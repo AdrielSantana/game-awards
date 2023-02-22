@@ -149,10 +149,11 @@ export const categoryController = {
         return respondWith(res, 400, "Game already in the category", {}, false);
       }
 
-      const addedGameAssociation = await category.addGame(gameId);
+      await category.addGame(gameId);
 
       return respondWith(res, 200, "Game added to category", {
-        addedGameAssociation,
+        gameName: game.name,
+        categoryName: category.name,
       });
     } catch (error) {
       if (error instanceof Error) {
@@ -189,7 +190,8 @@ export const categoryController = {
       await category.removeGame(gameId);
 
       return respondWith(res, 200, "Game removed from the category", {
-        association,
+        gameName: game.name,
+        categoryName: category.name,
       });
     } catch (error) {
       if (error instanceof Error) {
@@ -228,7 +230,9 @@ export const categoryController = {
       await association.save();
 
       return respondWith(res, 200, "Vote added", {
-        association,
+        votes: association.votes,
+        gameName: game.name,
+        categoryName: category.name,
       });
     } catch (error) {
       if (error instanceof Error) {
@@ -312,7 +316,6 @@ export const categoryController = {
         ...game?.get(),
         category: category.name,
         votes: winnerAssociation.votes,
-        found: true,
       };
 
       return respondWith(res, 200, "Showing category winner", { winner });
