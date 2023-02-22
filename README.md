@@ -19,7 +19,7 @@ Lista de tecnologias utilizadas:
 
 > O aplicativo contabiliza os votos para cada jogo em cada categoria e fornece o vencedor entre eles. Para isso foi necessário criar uma API para fornecer o CRUD dos dados a serem manipulados pelo Client.
 > 
-> Rotas do Backend feitas com Express. Sequelize e Postgres para manipulação do banco de dados, relação de Many-To-Many.
+> Rotas do Backend feitas com Express. Sequelize e Postgres para manipulação do banco de dados (Dados disponíveis através dos Seeders), relação de Many-To-Many.
 >
 > Front-End Mobile Utilizando React Native e Expo.
 >
