@@ -10,12 +10,22 @@ module.exports = {
         updated_at: new Date(),
       },
       {
-        name: "Best Music Direction",
+        name: "Best Game Direction",
         created_at: new Date(),
         updated_at: new Date(),
       },
       {
-        name: "Best Art Design",
+        name: "Best Narrative",
+        created_at: new Date(),
+        updated_at: new Date(),
+      },
+      {
+        name: "Best Art Direction",
+        created_at: new Date(),
+        updated_at: new Date(),
+      },
+      {
+        name: "Best Score and Music",
         created_at: new Date(),
         updated_at: new Date(),
       },

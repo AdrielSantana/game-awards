@@ -2,6 +2,20 @@ import { Request, Response } from "express";
 import { Category, Game } from "../models";
 import { CategoryGames, CategoryGamesInstance } from "../models/categoryGames";
 
+const respondWith = (
+  res: Response,
+  status: number,
+  message: string,
+  obj?: object,
+  found: boolean = true
+) => {
+  return res.status(status).json({
+    message: message,
+    found: found,
+    ...obj,
+  });
+};
+
 export const categoryController = {
   //GET /categories
   index: async (req: Request, res: Response) => {
@@ -13,7 +27,7 @@ export const categoryController = {
       return res.status(200).json(categories);
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json(error.message);
+        return respondWith(res, 400, error.message, {}, false);
       }
     }
   },
@@ -37,15 +51,13 @@ export const categoryController = {
       });
 
       if (!category) {
-        return res
-          .status(404)
-          .json({ message: "category not found.", found: false });
+        return respondWith(res, 404, "Category not found", {}, false);
       }
 
-      return res.status(200).json({ ...category.get(), found: true });
+      return respondWith(res, 200, "Showing category", { ...category.get() });
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json(error.message);
+        return respondWith(res, 400, error.message, {}, false);
       }
     }
   },
@@ -56,10 +68,10 @@ export const categoryController = {
     try {
       const category = await Category.create({ name });
 
-      return res.status(201).json(category);
+      return respondWith(res, 201, "Category saved", { ...category.get() });
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json(error.message);
+        return respondWith(res, 400, error.message, {}, false);
       }
     }
   },
@@ -73,9 +85,7 @@ export const categoryController = {
       const category = await Category.findByPk(id);
 
       if (!category) {
-        return res
-          .status(404)
-          .json({ message: "category not found.", found: false });
+        return respondWith(res, 404, "Category not found", {}, false);
       }
 
       const [affectedRows, categories] = await Category.update(
@@ -83,10 +93,12 @@ export const categoryController = {
         { where: { id }, returning: true }
       );
 
-      return res.status(201).json({ ...categories[0].get(), found: true });
+      return respondWith(res, 201, "Category updated", {
+        ...categories[0].get(),
+      });
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json(error.message);
+        return respondWith(res, 400, error.message, {}, false);
       }
     }
   },
@@ -95,22 +107,20 @@ export const categoryController = {
   delete: async (req: Request, res: Response) => {
     const { id } = req.params;
     try {
-      const category = await Category.findByPk(id);
+      const category = await Category.findByPk(id, {
+        attributes: { exclude: ["createdAt", "updatedAt"] },
+      });
 
       if (!category) {
-        return res
-          .status(404)
-          .json({ message: "category not found", found: false });
+        return respondWith(res, 404, "Category not found", {}, false);
       }
 
       await Category.destroy({ where: { id } });
 
-      return res
-        .status(200)
-        .json({ message: `${category.name} category deleted`, found: true });
+      return respondWith(res, 200, "Category deleted", { ...category.get() });
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json(error.message);
+        return respondWith(res, 400, error.message, {}, false);
       }
     }
   },
@@ -124,15 +134,11 @@ export const categoryController = {
       const game = await Game.findByPk(gameId);
 
       if (!category) {
-        return res
-          .status(404)
-          .json({ message: "category not found", found: false });
+        return respondWith(res, 404, "Category not found", {}, false);
       }
 
       if (!game) {
-        return res
-          .status(404)
-          .json({ message: "game not found", found: false });
+        return respondWith(res, 404, "Game not found", {}, false);
       }
 
       const association = await CategoryGames.findOne({
@@ -140,20 +146,17 @@ export const categoryController = {
       });
 
       if (association) {
-        return res
-          .status(404)
-          .json({ message: "game is already in the category", found: false });
+        return respondWith(res, 400, "Game already in the category", {}, false);
       }
 
-      await category.addGame(gameId);
+      const addedGameAssociation = await category.addGame(gameId);
 
-      return res.status(200).json({
-        message: `${game.name} game added to ${category.name} category`,
-        found: true,
+      return respondWith(res, 200, "Game added to category", {
+        addedGameAssociation,
       });
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json(error.message);
+        return respondWith(res, 400, error.message, {}, false);
       }
     }
   },
@@ -167,36 +170,30 @@ export const categoryController = {
       const game = await Game.findByPk(gameId);
 
       if (!category) {
-        return res
-          .status(404)
-          .json({ message: "category not found", found: false });
+        return respondWith(res, 404, "Category not found", {}, false);
       }
 
       if (!game) {
-        return res
-          .status(404)
-          .json({ message: "game not found", found: false });
+        return respondWith(res, 404, "Game not found", {}, false);
       }
 
       const association = await CategoryGames.findOne({
         where: { gameId, categoryId },
+        attributes: { exclude: ["createdAt", "updatedAt"] },
       });
 
       if (!association) {
-        return res
-          .status(404)
-          .json({ message: "game is not in this category", found: false });
+        return respondWith(res, 404, "Game is not in this category", {}, false);
       }
 
       await category.removeGame(gameId);
 
-      return res.status(200).json({
-        message: `${game.name} game removed from ${category.name} category`,
-        found: true,
+      return respondWith(res, 200, "Game removed from the category", {
+        association,
       });
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json(error.message);
+        return respondWith(res, 400, error.message, {}, false);
       }
     }
   },
@@ -210,38 +207,32 @@ export const categoryController = {
       const game = await Game.findByPk(gameId);
 
       if (!category) {
-        return res
-          .status(404)
-          .json({ message: "category not found", found: false });
+        return respondWith(res, 404, "Category not found", {}, false);
       }
 
       if (!game) {
-        return res
-          .status(404)
-          .json({ message: "game not found", found: false });
+        return respondWith(res, 404, "Game not found", {}, false);
       }
 
       const association = await CategoryGames.findOne({
         where: { gameId, categoryId },
+        attributes: { exclude: ["createdAt"] },
       });
 
       if (!association) {
-        return res
-          .status(404)
-          .json({ message: "game is not in this category", found: false });
+        return respondWith(res, 404, "Game is not in this category", {}, false);
       }
 
       association.votes += 1;
 
       await association.save();
 
-      return res.status(200).json({
-        message: `1 vote added to ${game.name} in ${category.name} category`,
-        found: true,
+      return respondWith(res, 200, "Vote added", {
+        association,
       });
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json(error.message);
+        return respondWith(res, 400, error.message, {}, false);
       }
     }
   },
@@ -252,18 +243,16 @@ export const categoryController = {
 
     try {
       const category = await Category.findByPk(categoryId);
-      const game = await Game.findByPk(gameId);
+      const game = await Game.findByPk(gameId, {
+        attributes: { exclude: ["createdAt", "updatedAt"] },
+      });
 
       if (!category) {
-        return res
-          .status(404)
-          .json({ message: "category not found", found: false });
+        return respondWith(res, 404, "Category not found", {}, false);
       }
 
       if (!game) {
-        return res
-          .status(404)
-          .json({ message: "game not found", found: false });
+        return respondWith(res, 404, "Game not found", {}, false);
       }
 
       const association = await CategoryGames.findOne({
@@ -271,20 +260,19 @@ export const categoryController = {
       });
 
       if (!association) {
-        return res
-          .status(404)
-          .json({ message: "game is not in this category", found: false });
+        return respondWith(res, 404, "Game is not in this category", {}, false);
       }
 
-      return res.status(200).json({
+      const showGame = {
         ...game.get(),
-        category_name: category.name,
+        categoryName: category.name,
         votes: association.votes,
-        found: true,
-      });
+      };
+
+      return respondWith(res, 200, "Showing Category Game", { showGame });
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json(error.message);
+        return respondWith(res, 400, error.message, {}, false);
       }
     }
   },
@@ -297,9 +285,7 @@ export const categoryController = {
       const category = await Category.findByPk(categoryId);
 
       if (!category) {
-        return res
-          .status(404)
-          .json({ message: "category not found", found: false });
+        return respondWith(res, 404, "Category not found", {}, false);
       }
 
       const associations = await CategoryGames.findAll({
@@ -307,10 +293,7 @@ export const categoryController = {
       });
 
       if (associations.length < 1) {
-        return res.status(404).json({
-          message: "category do not have games associated",
-          found: false,
-        });
+        return respondWith(res, 404, "Category do not have games", {}, false);
       }
 
       let winnerAssociation: CategoryGamesInstance = associations[0];
@@ -321,17 +304,21 @@ export const categoryController = {
         }
       });
 
-      const game = await Game.findByPk(winnerAssociation.gameId);
+      const game = await Game.findByPk(winnerAssociation.gameId, {
+        attributes: { exclude: ["createdAt", "updatedAt"] },
+      });
 
-      return res.status(200).json({
+      const winner = {
         ...game?.get(),
         category: category.name,
         votes: winnerAssociation.votes,
         found: true,
-      });
+      };
+
+      return respondWith(res, 200, "Showing category winner", { winner });
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json(error.message);
+        return respondWith(res, 400, error.message, {}, false);
       }
     }
   },

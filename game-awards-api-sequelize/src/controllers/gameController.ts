@@ -1,6 +1,20 @@
 import { Request, Response } from "express";
 import { Category, Game } from "../models";
 
+const respondWith = (
+  res: Response,
+  status: number,
+  message: string,
+  found: boolean = true,
+  obj?: object
+) => {
+  return res.status(status).json({
+    message: message,
+    found: found,
+    ...obj,
+  });
+};
+
 export const gameController = {
   //GET /games
   index: async (req: Request, res: Response) => {
@@ -12,7 +26,7 @@ export const gameController = {
       return res.status(200).json(games);
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json(error.message);
+        return respondWith(res, 400, error.message, false);
       }
     }
   },
@@ -36,15 +50,13 @@ export const gameController = {
       });
 
       if (!game) {
-        return res
-          .status(404)
-          .json({ message: "Game not found.", found: false });
+        return respondWith(res, 404, "Game not found", false);
       }
 
-      return res.status(200).json({ ...game.get(), found: true });
+      return respondWith(res, 404, "Showing game", true, { ...game.get() });
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json(error.message);
+        return respondWith(res, 400, error.message, false);
       }
     }
   },
@@ -55,15 +67,15 @@ export const gameController = {
     try {
       const game = await Game.create({ name, description, cover });
 
-      return res.status(201).json(game);
+      return respondWith(res, 201, "Game saved", true, { ...game.get() });
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json(error.message);
+        return respondWith(res, 400, error.message, false);
       }
     }
   },
 
-  //POST /games/:id
+  //PUT /games/:id
   update: async (req: Request, res: Response) => {
     const { name, description, cover } = req.body;
     const { id } = req.params;
@@ -72,9 +84,7 @@ export const gameController = {
       const game = await Game.findByPk(id);
 
       if (!game) {
-        return res
-          .status(404)
-          .json({ message: "Game not found.", found: false });
+        return respondWith(res, 404, "Game not found", false);
       }
 
       const [affectedRows, games] = await Game.update(
@@ -82,10 +92,10 @@ export const gameController = {
         { where: { id }, returning: true }
       );
 
-      return res.status(201).json({ ...games[0].get(), found: true });
+      return respondWith(res, 201, "Game updated", true, { ...games[0].get() });
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json(error.message);
+        return respondWith(res, 400, error.message, false);
       }
     }
   },
@@ -94,22 +104,20 @@ export const gameController = {
   delete: async (req: Request, res: Response) => {
     const { id } = req.params;
     try {
-      const game = await Game.findByPk(id);
+      const game = await Game.findByPk(id, {
+        attributes: { exclude: ["createdAt", "updatedAt"] },
+      });
 
       if (!game) {
-        return res
-          .status(404)
-          .json({ message: "Game not found", found: false });
+        return respondWith(res, 404, "Game not found", false);
       }
 
       await Game.destroy({ where: { id } });
 
-      return res
-        .status(200)
-        .json({ message: `${game.name} Game deleted`, found: true });
+      return respondWith(res, 200, "Game deleted", true, { ...game.get() });
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(400).json(error.message);
+        return respondWith(res, 400, error.message, false);
       }
     }
   },
