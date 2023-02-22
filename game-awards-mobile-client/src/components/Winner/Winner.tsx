@@ -1,13 +1,23 @@
 import React from "react";
-import { View, StyleSheet, Text, Image } from "react-native";
+import { View, StyleSheet, TouchableOpacity, Text, Image } from "react-native";
 
 import { Game } from "../../interfaces/GameInterface";
 
-const Winner = (props: { game: Game | any }) => {
+const Winner = (props: { game: Game | any; navigation: any }) => {
+  const goToGameScreen = () => {
+    props.navigation.navigate("GameScreen", { game: props.game });
+  };
+
   return (
     <View style={styles.winnerCard}>
       <View style={styles.cardBox}>
-        <Image source={{ uri: props.game.cover }} style={styles.card} />
+        <TouchableOpacity
+          onPress={() => {
+            goToGameScreen();
+          }}
+        >
+          <Image source={{ uri: props.game.cover }} style={styles.card} />
+        </TouchableOpacity>
       </View>
       <Text style={styles.gameName}>{props.game.name}</Text>
     </View>
@@ -38,7 +48,8 @@ const styles = StyleSheet.create({
     height: 300,
   },
   gameName: {
-    paddingVertical: 32,
+    paddingTop: 32,
+    paddingBottom: 64,
     fontFamily: "Draper",
     color: "white",
     fontSize: 24,

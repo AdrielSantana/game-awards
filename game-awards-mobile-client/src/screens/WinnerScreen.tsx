@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import {
-  View,
   Text,
   StyleSheet,
   ImageBackground,
@@ -16,16 +15,17 @@ import background from "../../assets/images/bg.png";
 import tgaTrophy from "../../assets/images/tgaTrophy.png";
 
 import { Game } from "../interfaces/GameInterface";
+import { Category } from "../interfaces/CategoryInterface";
 
-const WinnerScreen = () => {
+const WinnerScreen = (props: { category: Category; navigation: any }) => {
   const [winner, setWinner] = useState<Game | undefined>();
 
   useEffect(() => {
     (async () => {
-      const response = await clientGetWinner();
+      const response = await clientGetWinner(props.category.id);
       setWinner(response);
     })();
-  }, []);
+  }, [winner]);
 
   return (
     <ImageBackground
@@ -35,8 +35,12 @@ const WinnerScreen = () => {
     >
       <Image source={tgaTrophy} style={styles.tgaTrophy} resizeMode="contain" />
       <ScrollView style={styles.winnerContainer}>
-        <Text style={styles.goty}>game of the year</Text>
-        {winner != undefined ? <Winner game={winner} /> : <></>}
+        <Text style={styles.categoryAward}>{props.category.name}</Text>
+        {winner != undefined ? (
+          <Winner navigation={props.navigation} game={winner} />
+        ) : (
+          <></>
+        )}
       </ScrollView>
     </ImageBackground>
   );
@@ -56,12 +60,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     flex: 1,
   },
-  goty: {
+  categoryAward: {
     paddingBottom: 32,
     fontFamily: "Draper",
     color: "white",
     fontSize: 32,
-    width: 142,
     alignSelf: "center",
     textAlign: "center",
     textShadowColor: "#000",

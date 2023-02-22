@@ -4,33 +4,51 @@ import {
   Text,
   StyleSheet,
   Image,
-  Button,
   Alert,
   TouchableOpacity,
 } from "react-native";
 
-import { clientSendingVotes } from "../../api/api";
+import { clientAddVote } from "../../api/api";
+import { Category } from "../../interfaces/CategoryInterface";
 
 import { CategoryGame } from "../../interfaces/GameInterface";
 
-const sendingVote = (id: number): void => {
-  Alert.alert("Vote send", "Thanks for helping decide the Game Of The Year", [
-    { text: "OK", onPress: () => clientSendingVotes(id) },
-  ]);
+type Props = {
+  game: CategoryGame;
+  category: Category;
+  navigation: any;
 };
 
-const GameCard = (props: { game: CategoryGame | any }) => {
+const GameCard = ({ game, category, navigation }: Props) => {
+  const sendingVote = (): void => {
+    Alert.alert(
+      `Vote sent to ${game.name}`,
+      `Thanks for helping decide the ${category.name}`,
+      [{ text: "OK", onPress: () => clientAddVote(category.id, game.id) }]
+    );
+  };
+
+  const goToGameScreen = () => {
+    navigation.navigate("GameScreen", { game: game });
+  };
+
   return (
     <View style={styles.cardContainer}>
       <View style={styles.cardBox}>
-        <Image source={{ uri: props.game.cover }} style={styles.card} />
+        <TouchableOpacity
+          onPress={() => {
+            goToGameScreen();
+          }}
+        >
+          <Image source={{ uri: game.cover }} style={styles.card} />
+        </TouchableOpacity>
       </View>
 
       <View style={styles.infoContainer}>
-        <Text style={styles.label}>{props.game.name}</Text>
+        <Text style={styles.label}>{game.name}</Text>
         <TouchableOpacity
           onPress={() => {
-            sendingVote(props.game.id);
+            sendingVote();
           }}
           style={styles.button}
         >
@@ -46,7 +64,8 @@ const styles = StyleSheet.create({
     borderBottomColor: "#fff",
     width: "100%",
     flexDirection: "row",
-    marginVertical: 16,
+    paddingBottom: 32,
+    paddingHorizontal: 16,
   },
   cardBox: {
     shadowColor: "#000",

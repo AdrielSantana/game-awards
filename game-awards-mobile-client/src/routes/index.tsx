@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Loading from "./Loading";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { ImageBackground } from "react-native";
-const tab = createBottomTabNavigator();
-
 import DrawerNavigation from "./navigation/DrawerNavigation";
+import GameScreen from "../screens/GameScreen";
+
+const Stack = createNativeStackNavigator();
 
 const Routes = () => {
   let [fontLoaded] = useFonts({
@@ -15,9 +14,24 @@ const Routes = () => {
     Monteserrat: require("../../assets/fonts/Montserrat-Medium.ttf"),
   });
 
+  useEffect(() => {}, []);
+
   return (
     <NavigationContainer>
-      {fontLoaded ? <DrawerNavigation /> : <Loading />}
+      <Stack.Navigator
+        screenOptions={{ headerShown: false }}
+        initialRouteName="DrawerNavigation"
+      >
+        <Stack.Screen
+          name="DrawerNavigation"
+          component={fontLoaded ? DrawerNavigation : Loading}
+        />
+        <Stack.Screen
+          name="GameScreen"
+          component={GameScreen}
+          initialParams={{ game: {} }}
+        />
+      </Stack.Navigator>
     </NavigationContainer>
   );
 };

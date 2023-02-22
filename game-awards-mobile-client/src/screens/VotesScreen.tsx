@@ -1,29 +1,23 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  ImageBackground,
-  Image,
-} from "react-native";
+import { StyleSheet, ScrollView, ImageBackground } from "react-native";
 
-import { clientGetGames } from "../api/api";
+import { clientGetCategoryGames } from "../api/api";
 
 import background from "../../assets/images/bg.png";
 
 import { CategoryGame } from "../interfaces/GameInterface";
 import GameCard from "../components/Votes/GameCard";
+import { Category } from "../interfaces/CategoryInterface";
 
-const VotesScreen = () => {
+const VotesScreen = (props: { category: Category; navigation: any }) => {
   const [gameList, setGameList] = useState<[CategoryGame] | []>([]);
 
   useEffect(() => {
     (async () => {
-      const response = await clientGetGames();
+      const response = await clientGetCategoryGames(props.category.id);
       setGameList(response);
     })();
-  }, []);
+  }, [gameList]);
 
   return (
     <ImageBackground
@@ -34,7 +28,14 @@ const VotesScreen = () => {
       <ScrollView style={styles.gamesContainer}>
         {gameList.length > 0 ? (
           gameList.map((game, i) => {
-            return <GameCard key={i} game={game} />;
+            return (
+              <GameCard
+                navigation={props.navigation}
+                key={i}
+                game={game}
+                category={props.category}
+              />
+            );
           })
         ) : (
           <></>
@@ -53,8 +54,7 @@ const styles = StyleSheet.create({
   },
   gamesContainer: {
     width: "100%",
-    paddingVertical: 16,
-    paddingHorizontal: 16,
+    paddingTop: 16,
     flex: 1,
   },
 });
