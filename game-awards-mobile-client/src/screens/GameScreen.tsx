@@ -12,13 +12,14 @@ import {
 import background from "../../assets/images/bg.png";
 import { clientGetGameCategories } from "../api/api";
 import { GameCategory } from "../interfaces/CategoryInterface";
+import { useStackNavigation } from "../services/contexts/StackNavigationContext";
 
 type Props = {
   navigation: any;
   route: any;
 };
 
-const GameScreen = ({ navigation, route }: Props) => {
+const GameScreen = ({ route }: Props) => {
   const [categories, setCategories] = useState<[GameCategory] | []>([]);
 
   useEffect(() => {
@@ -28,9 +29,8 @@ const GameScreen = ({ navigation, route }: Props) => {
     })();
   }, []);
 
-  const goBack = () => {
-    navigation.goBack();
-  };
+  const { goToVoteScreen } = useStackNavigation();
+
   return (
     <ImageBackground
       source={background}
@@ -68,7 +68,10 @@ const GameScreen = ({ navigation, route }: Props) => {
               <></>
             )}
           </View>
-          <TouchableOpacity style={styles.button} onPress={() => goBack()}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => goToVoteScreen()}
+          >
             <Text style={styles.buttonText}>Voltar</Text>
           </TouchableOpacity>
         </View>

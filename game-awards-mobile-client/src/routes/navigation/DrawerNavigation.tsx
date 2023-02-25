@@ -5,7 +5,7 @@ import StackRoutes from "./StackRoutes";
 import { Category } from "../../interfaces/CategoryInterface";
 import { clientGetCategories } from "../../api/api";
 import Loading from "../Loading";
-import { StackNavigationContext } from "../../services/contexts/StackNavigationContext";
+import { useStackNavigation } from "../../services/contexts/StackNavigationContext";
 
 const Drawer = createDrawerNavigator();
 
@@ -16,7 +16,7 @@ type Props = {
 const DrawerNavigation = ({ navigation }: Props) => {
   const [categories, setCategories] = useState<[Category] | []>();
 
-  const { setStackNavigation } = useContext(StackNavigationContext);
+  const { setStackNavigation } = useStackNavigation();
 
   useEffect(() => {
     (async () => {
@@ -52,9 +52,7 @@ const DrawerNavigation = ({ navigation }: Props) => {
             <Drawer.Screen
               key={category.id}
               name={category.name}
-              children={() => (
-                <StackRoutes category={category} />
-              )}
+              children={() => <StackRoutes category={category} />}
             />
           );
         })

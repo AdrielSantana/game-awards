@@ -12,7 +12,7 @@ import { clientAddVote } from "../../api/api";
 import { Category } from "../../interfaces/CategoryInterface";
 
 import { CategoryGame } from "../../interfaces/GameInterface";
-import { StackNavigationContext } from "../../services/contexts/StackNavigationContext";
+import { useStackNavigation } from "../../services/contexts/StackNavigationContext";
 
 type Props = {
   game: CategoryGame;
@@ -28,7 +28,7 @@ const GameCard = ({ game, category }: Props) => {
     );
   };
 
-  const { goToGameScreen } = useContext(StackNavigationContext);
+  const { goToGameScreen } = useStackNavigation();
 
   return (
     <View style={styles.cardContainer}>

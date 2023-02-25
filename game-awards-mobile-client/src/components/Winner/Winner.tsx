@@ -2,10 +2,10 @@ import React, { useContext } from "react";
 import { View, StyleSheet, TouchableOpacity, Text, Image } from "react-native";
 
 import { Game } from "../../interfaces/GameInterface";
-import { StackNavigationContext } from "../../services/contexts/StackNavigationContext";
+import { useStackNavigation } from "../../services/contexts/StackNavigationContext";
 
 const Winner = (props: { game: Game | any }) => {
-  const { goToGameScreen } = useContext(StackNavigationContext);
+  const { goToGameScreen } = useStackNavigation();
 
   return (
     <View style={styles.winnerCard}>

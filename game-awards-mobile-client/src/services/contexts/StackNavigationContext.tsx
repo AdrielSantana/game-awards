@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useState } from "react";
+import { createContext, ReactNode, useContext, useState } from "react";
 import { CategoryGame } from "../../interfaces/GameInterface";
 
 type StackNavigationProps = {
@@ -39,4 +39,9 @@ const StackNavigationProvider = ({ children }: Props) => {
   );
 };
 
-export { StackNavigationProvider, StackNavigationContext };
+const useStackNavigation = () => {
+  const context = useContext(StackNavigationContext);
+  return context;
+};
+
+export { StackNavigationProvider, useStackNavigation };
