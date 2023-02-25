@@ -17,15 +17,19 @@ import tgaTrophy from "../../assets/images/tgaTrophy.png";
 import { Game } from "../interfaces/GameInterface";
 import { Category } from "../interfaces/CategoryInterface";
 
-const WinnerScreen = (props: { category: Category; navigation: any }) => {
+type Props = {
+  category: Category;
+};
+
+const WinnerScreen = ({ category }: Props) => {
   const [winner, setWinner] = useState<Game | undefined>();
 
   useEffect(() => {
     (async () => {
-      const response = await clientGetWinner(props.category.id);
+      const response = await clientGetWinner(category.id);
       setWinner(response);
     })();
-  }, [winner]);
+  }, []);
 
   return (
     <ImageBackground
@@ -35,12 +39,8 @@ const WinnerScreen = (props: { category: Category; navigation: any }) => {
     >
       <Image source={tgaTrophy} style={styles.tgaTrophy} resizeMode="contain" />
       <ScrollView style={styles.winnerContainer}>
-        <Text style={styles.categoryAward}>{props.category.name}</Text>
-        {winner != undefined ? (
-          <Winner navigation={props.navigation} game={winner} />
-        ) : (
-          <></>
-        )}
+        <Text style={styles.categoryAward}>{category.name}</Text>
+        {winner != undefined ? <Winner game={winner} /> : <></>}
       </ScrollView>
     </ImageBackground>
   );

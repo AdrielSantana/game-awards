@@ -9,15 +9,19 @@ import { CategoryGame } from "../interfaces/GameInterface";
 import GameCard from "../components/Votes/GameCard";
 import { Category } from "../interfaces/CategoryInterface";
 
-const VotesScreen = (props: { category: Category; navigation: any }) => {
+type Props = {
+  category: Category;
+};
+
+const VotesScreen = ({ category }: Props) => {
   const [gameList, setGameList] = useState<[CategoryGame] | []>([]);
 
   useEffect(() => {
     (async () => {
-      const response = await clientGetCategoryGames(props.category.id);
+      const response = await clientGetCategoryGames(category.id);
       setGameList(response);
     })();
-  }, [gameList]);
+  }, []);
 
   return (
     <ImageBackground
@@ -28,14 +32,7 @@ const VotesScreen = (props: { category: Category; navigation: any }) => {
       <ScrollView style={styles.gamesContainer}>
         {gameList.length > 0 ? (
           gameList.map((game, i) => {
-            return (
-              <GameCard
-                navigation={props.navigation}
-                key={i}
-                game={game}
-                category={props.category}
-              />
-            );
+            return <GameCard key={i} game={game} category={category} />;
           })
         ) : (
           <></>

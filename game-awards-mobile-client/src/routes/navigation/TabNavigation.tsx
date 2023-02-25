@@ -10,7 +10,11 @@ import { Category } from "../../interfaces/CategoryInterface";
 
 const tab = createBottomTabNavigator();
 
-const TabNavigation = (props: { category: Category; navigation: any }) => {
+type Props = {
+  category: Category;
+};
+
+const TabNavigation = ({ category }: Props) => {
   return (
     <tab.Navigator
       screenOptions={({ navigation }) => ({
@@ -59,12 +63,7 @@ const TabNavigation = (props: { category: Category; navigation: any }) => {
     >
       <tab.Screen
         name="Votes"
-        children={() => (
-          <VotesScreen
-            navigation={props.navigation}
-            category={props.category}
-          />
-        )}
+        children={() => <VotesScreen category={category} />}
         options={{
           tabBarIcon: () => <Image source={vote} />,
           tabBarIconStyle: {
@@ -75,7 +74,7 @@ const TabNavigation = (props: { category: Category; navigation: any }) => {
       />
       <tab.Screen
         name="Winner"
-        children={() => <WinnerScreen navigation={props.navigation} category={props.category} />}
+        children={() => <WinnerScreen category={category} />}
         options={{
           tabBarIcon: () => <Image source={trophy} />,
           tabBarIconStyle: {

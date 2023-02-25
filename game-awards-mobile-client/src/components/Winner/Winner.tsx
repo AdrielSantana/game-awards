@@ -1,19 +1,18 @@
-import React from "react";
+import React, { useContext } from "react";
 import { View, StyleSheet, TouchableOpacity, Text, Image } from "react-native";
 
 import { Game } from "../../interfaces/GameInterface";
+import { StackNavigationContext } from "../../services/contexts/StackNavigationContext";
 
-const Winner = (props: { game: Game | any; navigation: any }) => {
-  const goToGameScreen = () => {
-    props.navigation.navigate("GameScreen", { game: props.game });
-  };
+const Winner = (props: { game: Game | any }) => {
+  const { goToGameScreen } = useContext(StackNavigationContext);
 
   return (
     <View style={styles.winnerCard}>
       <View style={styles.cardBox}>
         <TouchableOpacity
           onPress={() => {
-            goToGameScreen();
+            goToGameScreen(props.game);
           }}
         >
           <Image source={{ uri: props.game.cover }} style={styles.card} />

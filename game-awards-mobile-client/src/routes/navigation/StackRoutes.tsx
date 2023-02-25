@@ -5,10 +5,14 @@ import background from "../../../assets/images/bg.png";
 import { Category } from "../../interfaces/CategoryInterface";
 import TabNavigation from "./TabNavigation";
 
-const StackRoutes = (props: { category: Category; navigation: any }) => {
+type Props = {
+  category: Category;
+};
+
+const StackRoutes = ({ category }: Props) => {
   return (
     <ImageBackground resizeMode="cover" style={{ flex: 1 }} source={background}>
-      <TabNavigation navigation={props.navigation} category={props.category} />
+      <TabNavigation category={category} />
     </ImageBackground>
   );
 };

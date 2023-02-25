@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   View,
   Text,
@@ -12,14 +12,14 @@ import { clientAddVote } from "../../api/api";
 import { Category } from "../../interfaces/CategoryInterface";
 
 import { CategoryGame } from "../../interfaces/GameInterface";
+import { StackNavigationContext } from "../../services/contexts/StackNavigationContext";
 
 type Props = {
   game: CategoryGame;
   category: Category;
-  navigation: any;
 };
 
-const GameCard = ({ game, category, navigation }: Props) => {
+const GameCard = ({ game, category }: Props) => {
   const sendingVote = (): void => {
     Alert.alert(
       `Vote sent to ${game.name}`,
@@ -28,16 +28,14 @@ const GameCard = ({ game, category, navigation }: Props) => {
     );
   };
 
-  const goToGameScreen = () => {
-    navigation.navigate("GameScreen", { game: game });
-  };
+  const { goToGameScreen } = useContext(StackNavigationContext);
 
   return (
     <View style={styles.cardContainer}>
       <View style={styles.cardBox}>
         <TouchableOpacity
           onPress={() => {
-            goToGameScreen();
+            goToGameScreen(game);
           }}
         >
           <Image source={{ uri: game.cover }} style={styles.card} />
